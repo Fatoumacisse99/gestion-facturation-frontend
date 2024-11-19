@@ -1,0 +1,75 @@
+{
+    "home": {
+      "nav": {
+        "features": "Fonctionnalités",
+        "pricing": "Tarification",
+        "contact": "Contact"
+      },
+      "hero": {
+        "title": "Bienvenue sur notre plateforme",
+        "subtitle": "La meilleure solution pour vos besoins",
+        "startFree": "Commencez gratuitement",
+        "watchDemo": "Regarder la démo"
+      },
+      "features": {
+        "title": "Fonctionnalités",
+        "feature1": {
+          "title": "Collaboration",
+          "description": "Travaillez avec votre équipe facilement."
+        },
+        "feature2": {
+          "title": "Sécurité",
+          "description": "Vos données sont en sécurité."
+        },
+        "feature3": {
+          "title": "Rapidité",
+          "description": "Des performances exceptionnelles."
+        }
+      },
+      "howItWorks": {
+        "title": "Comment ça marche",
+        "step1": {
+          "title": "Inscrivez-vous",
+          "description": "Créez un compte rapidement."
+        },
+        "step2": {
+          "title": "Configurez votre profil",
+          "description": "Personnalisez votre expérience."
+        },
+        "step3": {
+          "title": "Commencez à utiliser",
+          "description": "Profitez de notre plateforme."
+        }
+      },
+      "pricing": {
+        "title": "Tarification",
+        "basic": "Basique",
+        "premium": "Premium",
+        "pro": "Pro",
+        "choose": "Choisissez ce plan",
+        "features": {
+          "feature1": "Fonctionnalité 1",
+          "feature2": "Fonctionnalité 2",
+          "feature3": "Fonctionnalité 3"
+        }
+      },
+      "contact": {
+        "title": "Contactez-nous",
+        "description": "Nous serons ravis de vous aider.",
+        "namePlaceholder": "Votre nom",
+        "emailPlaceholder": "Votre email",
+        "messagePlaceholder": "Votre message",
+        "send": "Envoyer"
+      },
+      "footer": {
+        "about": "À propos",
+        "aboutText": "Nous sommes une entreprise innovante.",
+        "links": "Liens",
+        "features": "Fonctionnalités",
+        "pricing": "Tarification",
+        "contact": "Contact",
+        "social": "Suivez-nous"
+      }
+    }
+  }
+  

@@ -1,0 +1,18 @@
+<svg width="300" height="150" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond transparent -->
+  <rect width="300" height="150" fill="none"/>
+
+  <!-- Icône de facture blanche -->
+  <rect x="30" y="25" width="80" height="100" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="2" rx="10" ry="10"/>
+  
+  <!-- Lignes dorées sur la facture -->
+  <line x1="40" y1="45" x2="100" y2="45" stroke="#FFD700" stroke-width="3"/>
+  <line x1="40" y1="65" x2="100" y2="65" stroke="#FFD700" stroke-width="3"/>
+  <line x1="40" y1="85" x2="100" y2="85" stroke="#FFD700" stroke-width="3"/>
+  
+  <!-- Symbole de croissance (flèche ascendante) en jaune -->
+  <polyline points="150,100 170,80 190,100 230,60" fill="none" stroke="#FFD700" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Cercle autour de la flèche -->
+  <circle cx="190" cy="80" r="50" stroke="#FFD700" stroke-width="4" fill="none"/>
+</svg>

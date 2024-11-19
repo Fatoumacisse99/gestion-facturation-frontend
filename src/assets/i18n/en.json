@@ -1,0 +1,75 @@
+{
+    "home": {
+      "nav": {
+        "features": "Features",
+        "pricing": "Pricing",
+        "contact": "Contact"
+      },
+      "hero": {
+        "title": "Welcome to our platform",
+        "subtitle": "The best solution for your needs",
+        "startFree": "Start for free",
+        "watchDemo": "Watch the demo"
+      },
+      "features": {
+        "title": "Features",
+        "feature1": {
+          "title": "Collaboration",
+          "description": "Work easily with your team."
+        },
+        "feature2": {
+          "title": "Security",
+          "description": "Your data is safe."
+        },
+        "feature3": {
+          "title": "Speed",
+          "description": "Exceptional performance."
+        }
+      },
+      "howItWorks": {
+        "title": "How it works",
+        "step1": {
+          "title": "Sign Up",
+          "description": "Create an account quickly."
+        },
+        "step2": {
+          "title": "Set Up Your Profile",
+          "description": "Customize your experience."
+        },
+        "step3": {
+          "title": "Start Using",
+          "description": "Enjoy our platform."
+        }
+      },
+      "pricing": {
+        "title": "Pricing",
+        "basic": "Basic",
+        "premium": "Premium",
+        "pro": "Pro",
+        "choose": "Choose this plan",
+        "features": {
+          "feature1": "Feature 1",
+          "feature2": "Feature 2",
+          "feature3": "Feature 3"
+        }
+      },
+      "contact": {
+        "title": "Contact Us",
+        "description": "We would love to help you.",
+        "namePlaceholder": "Your name",
+        "emailPlaceholder": "Your email",
+        "messagePlaceholder": "Your message",
+        "send": "Send"
+      },
+      "footer": {
+        "about": "About",
+        "aboutText": "We are an innovative company.",
+        "links": "Links",
+        "features": "Features",
+        "pricing": "Pricing",
+        "contact": "Contact",
+        "social": "Follow us"
+      }
+    }
+  }
+  

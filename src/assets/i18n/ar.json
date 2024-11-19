@@ -1,0 +1,75 @@
+{
+    "home": {
+      "nav": {
+        "features": "الميزات",
+        "pricing": "التسعير",
+        "contact": "اتصل"
+      },
+      "hero": {
+        "title": "مرحبًا بكم في منصتنا",
+        "subtitle": "أفضل حل لاحتياجاتك",
+        "startFree": "ابدأ مجانًا",
+        "watchDemo": "شاهد العرض التوضيحي"
+      },
+      "features": {
+        "title": "الميزات",
+        "feature1": {
+          "title": "التعاون",
+          "description": "اعمل بسهولة مع فريقك."
+        },
+        "feature2": {
+          "title": "الأمان",
+          "description": "بياناتك آمنة."
+        },
+        "feature3": {
+          "title": "السرعة",
+          "description": "أداء استثنائي."
+        }
+      },
+      "howItWorks": {
+        "title": "كيف تعمل",
+        "step1": {
+          "title": "اشترك",
+          "description": "أنشئ حسابًا بسرعة."
+        },
+        "step2": {
+          "title": "قم بإعداد ملفك الشخصي",
+          "description": "خصص تجربتك."
+        },
+        "step3": {
+          "title": "ابدأ الاستخدام",
+          "description": "استمتع بمنصتنا."
+        }
+      },
+      "pricing": {
+        "title": "التسعير",
+        "basic": "أساسي",
+        "premium": "مميز",
+        "pro": "محترف",
+        "choose": "اختر هذه الخطة",
+        "features": {
+          "feature1": "الميزة 1",
+          "feature2": "الميزة 2",
+          "feature3": "الميزة 3"
+        }
+      },
+      "contact": {
+        "title": "اتصل بنا",
+        "description": "نحن نحب مساعدتك.",
+        "namePlaceholder": "اسمك",
+        "emailPlaceholder": "بريدك الإلكتروني",
+        "messagePlaceholder": "رسالتك",
+        "send": "إرسال"
+      },
+      "footer": {
+        "about": "حول",
+        "aboutText": "نحن شركة مبتكرة.",
+        "links": "روابط",
+        "features": "الميزات",
+        "pricing": "التسعير",
+        "contact": "اتصل",
+        "social": "تابعنا"
+      }
+    }
+  }
+  

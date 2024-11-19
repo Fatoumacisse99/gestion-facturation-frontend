@@ -1,0 +1,15 @@
+<svg width="200" height="50" viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg">
+  <!-- Icon (Abstract Financial Icon) -->
+  <g fill="#218838">
+    <!-- Circular Icon Background -->
+    <circle cx="25" cy="25" r="15" fill="#218838" />
+    <!-- Two Arrow Shapes for Transaction Symbol -->
+    <polygon points="20,18 28,18 23,12" fill="#fff" />
+    <polygon points="30,32 22,32 27,38" fill="#fff" />
+  </g>
+
+  <!-- Text "PayManage" -->
+  <text x="50" y="32" font-family="Arial, sans-serif" font-size="18" fill="#333">
+    PayManage
+  </text>
+</svg>
