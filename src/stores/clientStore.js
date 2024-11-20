@@ -3,11 +3,9 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 axios.defaults.baseURL = "http://localhost:4000/api";
-
-// Ajouter un interceptor pour inclure le token JWT dans les en-têtes
 axios.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("authToken"); // Récupérer le token depuis le localStorage
+    const token = localStorage.getItem("authToken");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -15,8 +13,6 @@ axios.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
-
-// Ajouter un interceptor pour gérer les erreurs 401 et 403
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -26,7 +22,6 @@ axios.interceptors.response.use(
         text: "Veuillez vous reconnecter.",
         icon: "warning",
       }).then(() => {
-        // Redirection vers la page de connexion
         window.location.href = "/login";
       });
     }
@@ -52,7 +47,7 @@ export const useClientStore = defineStore("clients", {
     async addClient(client) {
       try {
         const response = await axios.post("/clients", client);
-        this.clients.push(response.data.data); // Ajouter le nouveau client sans tri
+        this.clients.push(response.data.data);
         Swal.fire("Succès", "Client ajouté avec succès!", "success");
       } catch (error) {
         if (error.response && error.response.data.errors) {
@@ -75,7 +70,7 @@ export const useClientStore = defineStore("clients", {
         await axios.put(`/clients/${updatedClient.id}`, updatedClient);
         const index = this.clients.findIndex((c) => c.id === updatedClient.id);
         if (index !== -1) {
-          this.clients[index] = { ...updatedClient }; // Mettre à jour les données sans modifier l'ordre
+          this.clients[index] = { ...updatedClient }; 
         }
         Swal.fire("Succès", "Client mis à jour avec succès!", "success");
       } catch (error) {

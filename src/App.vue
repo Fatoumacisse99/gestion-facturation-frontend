@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <!-- Only show the Navbar if the route is not /login -->
+    <!-- Afficher le Navbar uniquement si la route n'est pas dans les exclusions -->
     <Navbar v-if="showNavbar" />
     <router-view />
   </div>
@@ -15,14 +15,14 @@ export default {
     Navbar,
   },
   computed: {
-    // Only show the navbar if the current route is not /login
     showNavbar() {
-      return this.$route.path !== '/login';
+      // Liste des routes où le navbar ne doit pas être affiché
+      const noNavbarRoutes = ['/login', '/forgot-password', '/reset-password'];
+      return !noNavbarRoutes.includes(this.$route.path);
     },
   },
 };
 </script>
 
 <style>
-/* Global styles if needed */
 </style>

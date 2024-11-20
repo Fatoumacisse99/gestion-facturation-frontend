@@ -170,16 +170,12 @@ export const useFactureStore = defineStore("factureStore", {
     },
 
     async deleteFacture(id) {
-      if (this.userRole !== 'ADMIN') {
-        Swal.fire("Accès interdit", "Vous n'êtes pas autorisé à supprimer une facture.", "error");
-        return;
-      }
       try {
         const response = await axios.delete(`/factures/${id}`);
         if (response.status === 200 || response.status === 204) {
           this.factures = this.factures.filter((facture) => facture.id !== id);
           this.factures.sort((a, b) => a.id - b.id);
-
+    
           Swal.fire("Succès", "Facture supprimée avec succès!", "success");
         }
       } catch (error) {
@@ -195,13 +191,12 @@ export const useFactureStore = defineStore("factureStore", {
         }
       }
     },
+    
 
     async getFactureById(id) {
       try {
         const response = await axios.get(`/factures/${id}`);
         const facture = response.data.data;
-
-        // Charger les informations du client si nécessaire
         if (!facture.client && facture.id_client) {
           const clientResponse = await axios.get(`/clients/${facture.id_client}`);
           facture.client = clientResponse.data.data;

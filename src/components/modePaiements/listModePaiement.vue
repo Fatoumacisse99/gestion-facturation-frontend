@@ -181,7 +181,7 @@ const filteredModesPaiement = computed(() => {
                 <i class="fas fa-edit"></i>
               </router-link>
   
-              <button @click="supprimerModePaiement(mode.id)" class="action-icon btn-delete">
+              <button v-if="modePaiementStore.userRole === 'ADMIN'" @click="supprimerModePaiement(mode.id)" class="action-icon btn-delete">
                 <i class="fas fa-trash-alt"></i>
               </button>
             </td>

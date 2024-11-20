@@ -18,7 +18,7 @@
           <th>Client</th>
           <th>Montant</th>
           <th>Pourcentage de Paiement</th>
-          <th>Montant Restant</th> <!-- Nouveau champ -->
+          <th>Montant Restant</th>
           <th class="text-center">Actions</th>
         </tr>
       </thead>
@@ -28,9 +28,9 @@
           <td>{{ formatDate(facture.date_emission) }}</td>
           <td>{{ formatDate(facture.date_echeance) }}</td>
           <td>{{ facture.client ? facture.client.nom : "Client inconnu" }}</td>
-          <td>{{ facture.montant }} €</td>
+          <td>{{ facture.montant }}MRU</td>
           <td>{{ facture.pourcentage_paiement }}%</td>
-          <td>{{ calculateMontantRestant(facture) }} €</td> <!-- Calcul et affichage -->
+          <td>{{ calculateMontantRestant(facture) }}MRU</td> 
           <td class="text-center">
             <router-link :to="{ name: 'DetailFacture', params: { id: facture.id } }" class="action-icon">
               <i class="fas fa-eye"></i>
@@ -38,7 +38,7 @@
             <router-link :to="{ name: 'ModifieFacture', params: { id: facture.id } }" class="action-icon">
               <i class="fas fa-edit"></i>
             </router-link>
-            <button @click="supprimerFacture(facture.id)" class="action-icon btn-delete">
+            <button v-if="factureStore.userRole === 'ADMIN'" @click="supprimerFacture(facture.id)" class="action-icon btn-delete">
               <i class="fas fa-trash-alt"></i>
             </button>
           </td>
@@ -55,18 +55,12 @@ import Swal from 'sweetalert2';
 
 const factureStore = useFactureStore();
 const searchQuery = ref("");
-
-// Fonction pour formater les dates en format local
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString();
 };
-
-// Fonction pour calculer le montant restant à payer
 const calculateMontantRestant = (facture) => {
   return (facture.montant * (1 - facture.pourcentage_paiement / 100)).toFixed(2);
 };
-
-// Charger les factures au montage du composant
 onMounted(async () => {
   await factureStore.loadDataFromApi();
 });
@@ -84,15 +78,12 @@ const supprimerFacture = async (id) => {
 
   if (confirmation.isConfirmed) {
     try {
-      // Appel au store pour supprimer la facture
       await factureStore.deleteFacture(id);
     } catch (error) {
       console.error("Erreur lors de la suppression de la facture :", error);
     }
   }
 };
-
-// Filtrage des factures en fonction de la recherche
 const filteredFactures = computed(() => {
   return factureStore.factures.filter(facture => 
     (facture.client && facture.client.nom.toLowerCase().includes(searchQuery.value.toLowerCase())) ||

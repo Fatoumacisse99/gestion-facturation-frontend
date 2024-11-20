@@ -118,11 +118,9 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 axios.defaults.baseURL = "http://localhost:4000/api";
-
-// Ajouter un interceptor pour inclure le token JWT dans les en-têtes
 axios.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("authToken"); // Récupérer le token depuis le localStorage
+    const token = localStorage.getItem("authToken");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -130,8 +128,6 @@ axios.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
-
-// Ajouter un interceptor pour gérer les erreurs 401 et 403
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -142,7 +138,6 @@ axios.interceptors.response.use(
           text: "Veuillez vous reconnecter.",
           icon: "warning",
         }).then(() => {
-          // Redirection vers la page de connexion
           window.location.href = "/login";
         });
       } else if (error.response.status === 403) {
@@ -163,7 +158,6 @@ export const usePaiementStore = defineStore("paiements", {
   }),
 
   actions: {
-    // Charger tous les paiements
     async loadDataFromApi() {
       try {
         const response = await axios.get("/paiements");
@@ -171,7 +165,6 @@ export const usePaiementStore = defineStore("paiements", {
 
         await Promise.all(
           this.paiements.map(async (paiement) => {
-            // Charger la facture liée au paiement
             if (paiement.id_facture) {
               try {
                 const factureResponse = await axios.get(`/factures/${paiement.id_facture}`);
@@ -182,8 +175,6 @@ export const usePaiementStore = defineStore("paiements", {
                 paiement.facture = { id: "Non défini" };
               }
             }
-
-            // Charger le mode de paiement lié
             if (paiement.id_mode_paiement) {
               try {
                 const modePaiementResponse = await axios.get(`/modes/${paiement.id_mode_paiement}`);
@@ -207,8 +198,6 @@ export const usePaiementStore = defineStore("paiements", {
         Swal.fire("Erreur", "Erreur lors du chargement des paiements.", "error");
       }
     },
-
-    // Récupérer un paiement par ID
     async getPaiementById(id) {
       try {
         const response = await axios.get(`/paiements/${id}`);
@@ -218,8 +207,6 @@ export const usePaiementStore = defineStore("paiements", {
         Swal.fire("Erreur", "Erreur lors de la récupération du paiement.", "error");
       }
     },
-
-    // Ajouter un paiement
     async addPaiement(paiement) {
       try {
         const response = await axios.post("/paiements", paiement);
@@ -232,7 +219,6 @@ export const usePaiementStore = defineStore("paiements", {
           } else if (error.response.status === 403) {
             Swal.fire("Erreur", "Vous n'avez pas les autorisations nécessaires.", "error");
           } else if (error.response.data.errors) {
-            // Gestion des erreurs de validation
             const errorMessages = error.response.data.errors
               .map((err) => `- ${err.msg}`)
               .join("<br>");
@@ -249,8 +235,6 @@ export const usePaiementStore = defineStore("paiements", {
         }
       }
     },
-
-    // Mettre à jour un paiement
     async updatePaiement(paiement) {
       try {
         const response = await axios.put(`/paiements/${paiement.id}`, paiement);
@@ -273,8 +257,6 @@ export const usePaiementStore = defineStore("paiements", {
         }
       }
     },
-
-    // Supprimer un paiement
     async deletePaiement(id) {
       try {
         const response = await axios.delete(`/paiements/${id}`);

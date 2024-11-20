@@ -18,7 +18,6 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           
-          <!-- Afficher "Utilisateurs" uniquement si l'utilisateur est un ADMIN -->
           <li class="nav-item" v-if="isAdmin">
             <router-link to="/utilisateurs" class="nav-link">
               <i class="fas fa-users"></i> Utilisateurs
@@ -45,8 +44,6 @@
               <i class="fas fa-wallet"></i> Methode-Paiements
             </router-link>
           </li>
-
-          <!-- Lien vers le profil -->
           <li class="nav-item" v-if="isLoggedIn">
             <router-link to="/profile" class="nav-link">
               <i class="fas fa-user"></i> Profil
@@ -63,16 +60,14 @@ export default {
   name: 'Navbar',
   computed: {
     isAdmin() {
-      // Récupérer le token et décoder les informations de l'utilisateur
       const token = localStorage.getItem('token');
       if (token) {
-        const decodedToken = JSON.parse(atob(token.split('.')[1])); // Décoder le token JWT
-        return decodedToken && decodedToken.role === 'ADMIN';  // Vérifier le rôle
+        const decodedToken = JSON.parse(atob(token.split('.')[1])); 
+        return decodedToken && decodedToken.role === 'ADMIN';  
       }
       return false;
     },
     isLoggedIn() {
-      // Vérifier si l'utilisateur est connecté
       return !!localStorage.getItem('token');
     }
   }
