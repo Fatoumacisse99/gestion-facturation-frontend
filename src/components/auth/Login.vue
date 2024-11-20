@@ -39,7 +39,7 @@
 <script setup>
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
-import axios from 'axios'; // Assurez-vous d'avoir installé axios
+import axios from 'axios';
 
 const router = useRouter();
 
@@ -50,19 +50,13 @@ const form = reactive({
 
 const handleSubmit = async () => {
   try {
-    // Appel API pour la connexion
     const response = await axios.post('http://localhost:4000/auth/login', {
       email: form.email,
       mot_de_passe: form.password,
     });
-
-    // Si la connexion est réussie, enregistrer le token
     localStorage.setItem('token', response.data.token);
-
-    // Rediriger vers la page d'accueil ou tableau de bord
     router.push('/home');
   } catch (error) {
-    // Gérer les erreurs d'authentification
     console.error(error.response ? error.response.data : error.message);
     alert('Erreur de connexion, veuillez vérifier vos informations.');
   }
