@@ -1,166 +1,154 @@
 
-# FacturationApp
+# FacturationApp - Frontend
 
-## Table des Matières
+Bienvenue dans **FacturationApp**, une application conçue pour simplifier la gestion des factures, des paiements, des clients et des utilisateurs. Ce README fournit une documentation complète pour mettre en place et utiliser l'application frontend.
+
+Le frontend utilise **Vue.js**, avec **Axios** pour les requêtes API et **Bootstrap** pour le design.
+
+---
+
+## 📚 Table des Matières
+
 1. [Description](#description)
 2. [Fonctionnalités](#fonctionnalités)
    - [Gestion des Factures](#gestion-des-factures)
-   - [Gestion des Lignes de Facture](#gestion-des-lignes-de-facture)
    - [Gestion des Paiements](#gestion-des-paiements)
    - [Gestion des Clients](#gestion-des-clients)
    - [Gestion des Utilisateurs](#gestion-des-utilisateurs)
-   - [Gestion des Modes de Paiement](#gestion-des-modes-de-paiement)
-3. [Technologies Utilisées](#technologies-utilisées)
-4. [Prérequis](#prérequis)
-5. [Installation](#installation)
-6. [Structure du Projet](#structure-du-projet)
-7. [Auteur](#auteur)
+3. [🎨 Technologies Utilisées](#technologies-utilisées)
+4. [🔧 Prérequis](#prérequis)
+5. [⚙️ Installation](#installation)
+6. [🌐 Connexion avec le Backend](#connexion-avec-le-backend)
+7. [📂 Structure du Projet](#structure-du-projet)
+8. [✍️ Auteur](#auteur)
 
-## Description
+---
 
-**FacturationApp** est une application développée pour simplifier la gestion des factures, des paiements, des clients, des utilisateurs et des modes de paiement dans les petites et moyennes entreprises (PME). Elle propose une interface intuitive permettant de gérer facilement les opérations de facturation, suivre les paiements et maintenir un historique client complet, tout en offrant une gestion centralisée des utilisateurs et des modes de paiement.
+## 📝 Description
 
-## Fonctionnalités
+**FacturationApp** est une application frontend développée pour aider les petites et moyennes entreprises à gérer facilement leurs processus de facturation, les paiements et la gestion des clients.
 
-### Gestion des Factures
-Cette fonctionnalité permet aux utilisateurs de créer, consulter, mettre à jour et supprimer des factures. Elle inclut l’ajout direct de lignes de facture pour détailler les articles ou services facturés.
+### Objectifs :
+- Suivi précis des paiements et des factures.
+- Interface utilisateur intuitive.
+- Alerte pour les factures en retard.
+- Gestion centralisée des utilisateurs et rôles.
 
-- **Ajouter une facture** : Créer une nouvelle facture en renseignant le client, la date, le montant total, et les lignes de facture.
-- **Modifier une facture** : Mettre à jour les informations d'une facture existante, y compris les lignes de facture.
-- **Supprimer une facture** : Retirer une facture et ses lignes associées.
-- **Consulter les détails d'une facture** : Afficher toutes les informations d'une facture, y compris les lignes de facture.
-- **Liste des factures** : Visualiser toutes les factures enregistrées dans le système.
+---
 
-### Gestion des Lignes de Facture
-Cette section permet d’ajouter, de modifier, et de supprimer des lignes de facture pour des articles ou services spécifiques, directement liés aux factures.
+## ⚡ Fonctionnalités
 
-- **Ajouter une ligne de facture** : Ajouter des articles ou services avec prix et quantité à une facture.
-- **Modifier une ligne de facture** : Ajuster les détails d'une ligne de facture.
-- **Supprimer une ligne de facture** : Retirer une ligne spécifique d'une facture.
+### 📄 Gestion des Factures
+- Ajouter, consulter, modifier et supprimer des factures.
+- Ajouter des lignes de facture pour les produits/services.
 
-### Gestion des Paiements
-L’application permet un suivi rigoureux des paiements, avec des fonctionnalités d’alerte pour les factures impayées ou en retard.
+### 💳 Gestion des Paiements
+- Enregistrer les paiements complets ou partiels.
+- Notifications pour les factures en retard.
 
-- **Enregistrer un paiement** : Enregistrer des paiements partiels ou complets, tout en suivant le montant dû.
-- **Alertes de paiement** : Notifications pour les factures en retard de paiement.
-- **Statut des paiements** : Visualiser l’état de chaque facture (payée, en attente, partiellement payée).
+### 👥 Gestion des Clients
+- Créer, mettre à jour, et supprimer des clients.
+- Consulter la liste des clients avec leurs informations détaillées.
 
-### Gestion des Clients
-Le module client assure une gestion complète des informations des clients.
+### 🔐 Gestion des Utilisateurs
+- Ajouter, modifier et gérer les rôles des utilisateurs.
+- Afficher une liste de tous les utilisateurs.
 
-- **Ajouter un client** : Enregistrer un client avec ses coordonnées et informations spécifiques.
-- **Modifier un client** : Mettre à jour les informations d'un client existant.
-- **Supprimer un client** : Retirer un client si aucune facture en cours ne lui est associée.
-- **Consulter les détails d'un client** : Afficher les informations d'un client particulier.
-- **Liste des clients** : Voir la liste de tous les clients enregistrés.
+---
 
-### Gestion des Utilisateurs
-Cette section est dédiée à la gestion des utilisateurs de l’application, permettant de gérer les rôles et accès.
+## 🎨 Technologies Utilisées
 
-- **Ajouter un utilisateur** : Ajouter un nouvel utilisateur avec des informations d’identification et de rôle.
-- **Modifier un utilisateur** : Mettre à jour les informations d'un utilisateur.
-- **Supprimer un utilisateur** : Supprimer un utilisateur, sous réserve qu'il n’ait pas de dépendances actives.
-- **Liste des utilisateurs** : Afficher la liste de tous les utilisateurs avec leurs informations.
+- **Vue.js** (v3.x) - Framework JavaScript
+- **Axios** - Gestion des requêtes API
+- **Bootstrap** (v5.x) - Framework CSS
+- **Vue Router** - Gestion des routes
+- **Pinia** - Gestion d'état
+- **Font Awesome** - Icônes pour un design moderne
 
-### Gestion des Modes de Paiement
-L’application supporte différents modes de paiement configurables, pour adapter la facturation aux besoins de l’entreprise.
+---
 
-- **Ajouter un mode de paiement** : Enregistrer un nouveau mode de paiement (ex. : carte, virement).
-- **Modifier un mode de paiement** : Mettre à jour les informations d'un mode de paiement existant.
-- **Supprimer un mode de paiement** : Retirer un mode de paiement de la liste.
-- **Liste des modes de paiement** : Afficher tous les modes de paiement disponibles.
+## 🔧 Prérequis
 
-## Technologies Utilisées
+Avant de commencer, assurez-vous d’avoir les éléments suivants installés :
 
-  - **[Vue.js](https://vuejs.org/)** - Framework JavaScript pour le frontend (v3.x)
-  - **[Bootstrap](https://getbootstrap.com/)** - Framework CSS pour un design réactif (v5.x)
-  - **[Font Awesome](https://fontawesome.com/)** - Bibliothèque d'icônes (v6.x)
-  - **[Pinia](https://pinia.vuejs.org/)** - Gestion d'état centralisée (v2.x)
-  - **[Vue Router](https://router.vuejs.org/)** - Gestion de la navigation (v4.x)
-  - **[vue-i18n](https://kazupon.github.io/vue-i18n/)** - Internationalisation (v9.x)
-  - **[Express.js](https://expressjs.com/)** - Framework backend pour l'API (v4.x)
-  - **[Prisma](https://www.prisma.io/)** - ORM pour la gestion de la base de données (v4.x)
-  - **[MySQL](https://www.mysql.com/)** - Base de données relationnelle (v8.x)
+- **Node.js** (v14+)
+- **npm** (fourni avec Node.js)
 
-## Prérequis
+---
 
-- [Node.js](https://nodejs.org/)
-- [MySQL](https://www.mysql.com/)
+## ⚙️ Installation
 
-## Installation
+### Étape 1 : Cloner le dépôt
+```bash
+git clone https://github.com/Fatoumacisse99/gestion-facturation-frontend.git
+cd gestion-facturation-frontend
+```
 
-1. **Clonez le dépôt**
+### Étape 2 : Installer les dépendances
+```bash
+npm install
+```
 
-   ```bash
-   git clone https://github.com/votre-utilisateur/votre-projet.git
-   ```
+### Étape 3 : Démarrer le projet
+```bash
+npm run dev
+```
 
-2. **Accédez au répertoire du projet :**
+Accédez à l’application via [http://localhost:5173](http://localhost:5173).
 
-   ```bash
-   cd votre-projet
-   ```
+---
 
-3. **Installez les dépendances**
+## 🌐 Connexion avec le Backend
 
-   ```bash
-   npm install
-   ```
+- **URL de base** : Toutes les requêtes API sont envoyées à l'URL suivante :
+  ```
+  http://localhost:4000/api
+  ```
+- Les tokens JWT sont utilisés pour l'authentification des requêtes. Ils sont ajoutés automatiquement via des intercepteurs Axios.
 
-4. **Configurez la base de données**
+---
 
-   - Créez une base de données MySQL.
-   - Ajoutez vos informations de connexion dans le fichier `.env` :
+## 📂 Structure du Projet
 
-     ```env
-     DATABASE_URL=mysql://user:password@localhost:3306/nombase
-     ```
-
-5. **Démarrez l'application en mode développement**
-
-   ```bash
-   npm run dev
-   ```
-
-6. **Accédez à l'application**
-
-   Accédez à l'application via [http://localhost:5173](http://localhost:5173).
-
-## Structure du Projet
-
-```plaintext
+```
 src/
 ├── components/
+│   ├── factures/
+│   │   ├── ajoutFacture.vue
+│   │   ├── modifieFacture.vue
+│   │   ├── detailFacture.vue
+│   │   └── listFacture.vue
 │   ├── paiements/
-│   │   └── modifiePaiement.vue
+│   │   ├── ajoutPaiement.vue
+│   │   ├── modifiePaiement.vue
+│   │   ├── detailPaiement.vue
+│   │   └── listPaiement.vue
+│   ├── clients/
+│   │   ├── ajoutClient.vue
+│   │   ├── modifieClient.vue
+│   │   ├── detailClient.vue
+│   │   └── listClient.vue
 │   ├── utilisateurs/
 │   │   ├── ajoutUtilisateur.vue
+│   │   ├── modifieUtilisateur.vue
 │   │   ├── detailUtilisateur.vue
-│   │   ├── listUtilisateur.vue
-│   │   └── modifieUtilisateur.vue
-│   ├── BarChart.vue
-│   ├── DoughnutChart.vue
-│   ├── Home.vue
-│   ├── LineChart.vue
-│   └── navbar.vue
-├── plugins/
+│   │   └── listUtilisateur.vue
+│   └── Navbar.vue
 ├── router/
 │   └── index.js
 ├── stores/
-│   ├── authStore.js
-│   ├── clientStore.js
 │   ├── factureStore.js
-│   ├── index.js
-│   ├── modePaiementStore.js
-│   ├── paiementStore.js
-│   └── utilisateurStore.js
+│   ├── clientStore.js
+│   ├── utilisateurStore.js
+│   └── paiementStore.js
 ├── App.vue
-├── i18n.js
 ├── main.js
-├── style.css
-└── .gitignore
+└── style.css
 ```
 
-## Auteur
+---
 
-Développé par Fatoumacisse99.
+## ✍️ Auteur
+
+Développé par **Fatouma Cisse**  
+[Profil GitHub](https://github.com/Fatoumacisse99)
