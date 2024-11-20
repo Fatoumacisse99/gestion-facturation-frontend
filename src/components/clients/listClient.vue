@@ -34,7 +34,7 @@
               <router-link :to="{ name: 'ModifieClient', params: { id: client.id } }" class="action-icon">
                 <i class="fas fa-edit"></i>
               </router-link>
-              <button v-if="clientStore.userRole === 'ADMIN'" @click="supprimerClient(client.id)" class="action-icon btn-delete">
+              <button v-if="clientStore.userRole !== 'ADMIN'" @click="supprimerClient(client.id)" class="action-icon btn-delete">
                 <i class="fas fa-trash-alt"></i>
               </button>
             </td>

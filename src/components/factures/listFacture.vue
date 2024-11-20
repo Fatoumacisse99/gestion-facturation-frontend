@@ -38,7 +38,7 @@
             <router-link :to="{ name: 'ModifieFacture', params: { id: facture.id } }" class="action-icon">
               <i class="fas fa-edit"></i>
             </router-link>
-            <button v-if="factureStore.userRole === 'ADMIN'" @click="supprimerFacture(facture.id)" class="action-icon btn-delete">
+            <button v-if="factureStore.userRole !== 'ADMIN'" @click="supprimerFacture(facture.id)" class="action-icon btn-delete">
               <i class="fas fa-trash-alt"></i>
             </button>
           </td>

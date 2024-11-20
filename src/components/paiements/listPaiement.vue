@@ -36,7 +36,7 @@
             <router-link :to="{ name: 'ModifiePaiement', params: { id: paiement.id } }" class="action-icon">
               <i class="fas fa-edit"></i>
             </router-link>
-            <button v-if="paiementStore.userRole === 'ADMIN'" @click="supprimerPaiement(paiement.id)" class="action-icon btn-delete">
+            <button v-if="paiementStore.userRole !== 'ADMIN'" @click="supprimerPaiement(paiement.id)" class="action-icon btn-delete">
               <i class="fas fa-trash-alt"></i>
             </button>
           </td>
