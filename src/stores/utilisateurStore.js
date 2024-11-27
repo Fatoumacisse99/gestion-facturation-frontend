@@ -81,17 +81,56 @@ export const useUtilisateurStore = defineStore("utilisateurStore", {
         this.handleError(error, "Erreur lors de la mise à jour de l'utilisateur.");
       }
     },
+    // async deleteUtilisateur(id) {
+    //   try {
+    //     const token = localStorage.getItem("token");
+    //     await axios.delete(`/users/${id}`, {
+    //       headers: { Authorization: `Bearer ${token}` },
+    //     });
+    //     this.utilisateurs = this.utilisateurs.filter((utilisateur) => utilisateur.id !== id);
+    //     Swal.fire("Succès", "Utilisateur supprimé avec succès.", "success");
+    //   } catch (error) {
+    //     const errorMessage = error.response?.data?.message;
+
+    //     if (errorMessage && errorMessage.includes("factures associées")) {
+    //       Swal.fire(
+    //         "Impossible de supprimer",
+    //         "Cet utilisateur ne peut pas être supprimé car il a des factures associées.",
+    //         "error"
+    //       );
+    //     } else if (errorMessage && errorMessage.includes("paiements associés")) {
+    //       Swal.fire(
+    //         "Impossible de supprimer",
+    //         "Cet utilisateur ne peut pas être supprimé car il a des paiements associés.",
+    //         "error"
+    //       );
+    //     } else {
+    //       this.handleError(error, "Impossible de supprimer cet utilisateur.");
+    //     }
+    //   }
+    // },
     async deleteUtilisateur(id) {
       try {
         const token = localStorage.getItem("token");
-        await axios.delete(`/users/${id}`, {
+        const decodedToken = JSON.parse(atob(token.split(".")[1])); // Décoder le token JWT pour récupérer l'ID de l'utilisateur connecté
+        const currentUserId = decodedToken.id;
+    
+        if (id === currentUserId) {
+          Swal.fire(
+            "Action interdite",
+            "Vous ne pouvez pas supprimer votre propre compte.",
+            "error"
+          );
+          return; 
+        }
+            await axios.delete(`/users/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         this.utilisateurs = this.utilisateurs.filter((utilisateur) => utilisateur.id !== id);
         Swal.fire("Succès", "Utilisateur supprimé avec succès.", "success");
       } catch (error) {
         const errorMessage = error.response?.data?.message;
-
+    
         if (errorMessage && errorMessage.includes("factures associées")) {
           Swal.fire(
             "Impossible de supprimer",
@@ -104,11 +143,18 @@ export const useUtilisateurStore = defineStore("utilisateurStore", {
             "Cet utilisateur ne peut pas être supprimé car il a des paiements associés.",
             "error"
           );
+        } else if (errorMessage && errorMessage.includes("modes de paiement associés")) {
+                Swal.fire(
+                  "Impossible de supprimer",
+                 "Cet utilisateur ne peut pas être supprimé car il a des modes de paiement associés.",
+                  "error"
+                );
         } else {
           this.handleError(error, "Impossible de supprimer cet utilisateur.");
         }
       }
     },
+    
     async getUtilisateurById(id) {
       try {
         const token = localStorage.getItem("token");
