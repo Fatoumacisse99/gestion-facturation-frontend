@@ -26,7 +26,7 @@
         <tr>
           <th>Nom de l'Article</th>
           <th>Quantité</th>
-          <th>Prix Unitaire (€)</th>
+          <th>Prix Unitaire (MRU)</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -50,7 +50,7 @@
     <button type="button" class="btn btn-success mb-3" @click="ajouterLigne">Ajouter un Détail</button>
     <div class="row mt-3">
       <div class="col-md-6">
-        <h5>Montant Total: {{ montantTotal }} €</h5>
+        <h5>Montant Total: {{ montantTotal }} MRU</h5>
       </div>
     </div>
     <div class="text-end mt-4">
@@ -59,7 +59,6 @@
     </div>
   </div>
 </template>
-
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
@@ -70,8 +69,6 @@ import Swal from 'sweetalert2';
 const router = useRouter();
 const factureStore = useFactureStore();
 const clientStore = useClientStore();
-
-// Valeurs par défaut pour la facture, avec date d'émission d'aujourd'hui et échéance de 30 jours
 const facture = ref({
   date_emission: new Date().toISOString().split("T")[0],
   date_echeance: new Date(new Date().setDate(new Date().getDate() + 30)).toISOString().split("T")[0],
@@ -84,26 +81,20 @@ const clients = ref([]);
 const montantTotal = computed(() =>
   facture.value.lignes.reduce((total, ligne) => total + ligne.quantite * ligne.prix_unitaire, 0)
 );
-
-// Charger les données des clients au montage
 onMounted(async () => {
   await clientStore.loadDataFromApi();
   clients.value = clientStore.clients;
 });
 
-// Ajouter une ligne de détail
 const ajouterLigne = () => {
   facture.value.lignes.push({ nom: "", quantite: 1, prix_unitaire: 0 });
 };
 
-// Supprimer une ligne de détail
 const supprimerLigne = (index) => {
   facture.value.lignes.splice(index, 1);
 };
 
-// Validation et ajout de la facture
 const ajouterFacture = async () => {
-  // Validation des champs requis
   if (!facture.value.date_emission || !facture.value.date_echeance || !facture.value.id_client) {
     Swal.fire("Erreur", "Veuillez remplir tous les champs obligatoires.", "error");
     return;
@@ -114,7 +105,6 @@ const ajouterFacture = async () => {
       ...facture.value, 
       montant: montantTotal.value.toFixed(2) 
     });
-    Swal.fire("Succès", "La facture a été ajoutée avec succès.", "success");
     router.push("/factures");
   } catch (error) {
     console.error("Erreur lors de l'ajout de la facture :", error);
@@ -122,7 +112,6 @@ const ajouterFacture = async () => {
   }
 };
 
-// Annuler l'ajout de la facture et retourner à l'accueil
 const annuler = () => {
   router.push("/home");
 };

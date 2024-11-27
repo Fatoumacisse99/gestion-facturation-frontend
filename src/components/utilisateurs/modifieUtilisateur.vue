@@ -26,16 +26,14 @@
             <option value="COMPTABLE">COMPTABLE</option>
           </select>
         </div>
-      </div>
-      <!-- <div class="row">
         <div class="col-md-6 mb-3">
           <label class="form-label">Statut:</label>
           <select v-model="utilisateur.statut" required class="form-control form-control-sm">
-            <option value="actif">Actif</option>
-            <option value="inactif">Inactif</option>
+            <option :value="true">Actif</option>
+            <option :value="false">Inactif</option>
           </select>
         </div>
-      </div> -->
+      </div>
       <div class="d-flex justify-content-between mt-4">
         <button type="submit" class="btn btn-primary flex-grow-1 me-2">Enregistrer</button>
         <button type="button" @click="annuler" class="btn btn-cancel flex-grow-1">Annuler</button>

@@ -47,7 +47,7 @@ export const useUtilisateurStore = defineStore("utilisateurStore", {
         const response = await axios.get("/users", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        this.utilisateurs = response.data.data.sort((a, b) => a.id - b.id); // Trier par ID
+        this.utilisateurs = response.data.data.sort((a, b) => a.id - b.id);
       } catch (error) {
         this.handleError(error, "Erreur lors du chargement des utilisateurs.");
       }
@@ -120,23 +120,7 @@ export const useUtilisateurStore = defineStore("utilisateurStore", {
         this.handleError(error, "Erreur lors de la récupération de l'utilisateur.");
         throw error;
       }
-    },
-    async updateStatut(id, statut) {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.patch(`/users/${id}/statut`, { statut }, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const index = this.utilisateurs.findIndex((u) => u.id === id);
-        if (index !== -1) {
-          this.utilisateurs[index].statut = statut;
-        }
-
-        Swal.fire("Succès", `Statut de l'utilisateur mis à jour en ${statut}.`, "success");
-      } catch (error) {
-        this.handleError(error, "Erreur lors de la mise à jour du statut de l'utilisateur.");
-      }
-    },
+    },  
     handleError(error, defaultMessage) {
       if (error.response?.data?.errors) {
         const errorMessages = error.response.data.errors

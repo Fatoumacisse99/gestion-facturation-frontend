@@ -3,7 +3,7 @@
     <p>Chargement des données, veuillez patienter...</p>
   </div>
   <div v-else class="container mt-5 facture-detail">
-    <h2 class="text-center">Détails de la Facture #{{ facture.id }}</h2>
+    <h2 class="text-center">Détails de la Facture FT{{ facture.id }}</h2>
     
     <div class="row mt-4">
       <div class="col-md-6 mb-3">
@@ -19,15 +19,13 @@
         <p class="form-control-static">{{ facture.client.nom }} {{ facture.client.prenom }}</p>
       </div>
     </div>
-
-    <!-- Table des détails de la facture -->
-    <h5 class="mt-4">Détails de la Commande</h5>
+    <h5 class="mt-4">Détails de la Facture</h5>
     <table class="table table-bordered">
       <thead class="table-light border-top">
         <tr>
           <th>Nom de l'Article</th>
           <th>Quantité</th>
-          <th>Prix Unitaire (€)</th>
+          <th>Prix Unitaire (MRU)</th>
         </tr>
       </thead>
       <tbody>
@@ -39,14 +37,11 @@
       </tbody>
     </table>
 
-    <!-- Affichage du Montant Total -->
     <div class="row mt-3">
       <div class="col-md-6">
-        <h5>Montant Total: {{ montantTotal }} €</h5>
+        <h5>Montant Total: {{ montantTotal }} MRU</h5>
       </div>
     </div>
-
-    <!-- Bouton de retour -->
     <div class="text-end mt-4">
       <button type="button" class="btn btn-secondary" @click="annuler">Retour à la liste</button>
     </div>
@@ -67,13 +62,11 @@ const facture = ref({
   date_emission: "",
   date_echeance: "",
   id_client: null,
-  client: null, // Initialise client à null pour éviter l'erreur de chargement
+  client: null, 
   lignes: [],
 });
 
 const loading = ref(true);
-
-// Formater les dates pour les afficher sous un format lisible
 const formattedDateEmission = computed(() =>
   facture.value.date_emission ? new Date(facture.value.date_emission).toLocaleDateString() : ""
 );
@@ -112,14 +105,14 @@ const annuler = () => {
 <style scoped>
 .container.facture-detail {
   max-width: 800px;
-  background-color: #f5f5dc; /* Beige */
+  background-color: #f5f5dc; 
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
 }
 
 h2 {
-  color: #218838; /* Vert principal */
+  color: #218838;
 }
 
 .form-label {

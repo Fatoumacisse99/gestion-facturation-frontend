@@ -13,6 +13,7 @@
           <th>Nom</th>
           <th>Email</th>
           <th>Rôle</th>
+          <th class="text-center">Status</th>
           <th class="text-center">Actions</th>
         </tr>
       </thead>
@@ -21,6 +22,15 @@
           <td>{{ user.nom }}</td>
           <td>{{ user.email }}</td>
           <td>{{ user.role }}</td>
+          <td>
+            <span
+              class="badge"
+              :class="user.statut ? 'bg-success' : 'bg-danger'"
+              @click="toggleStatut(user)"
+            >
+              {{ user.statut ? 'Actif' : 'Inactif' }}
+            </span>
+          </td>
           <td class="text-center">
             <router-link :to="{ name: 'DetailUtilisateur', params: { id: user.id } }" class="action-icon">
               <i class="fas fa-eye"></i>
@@ -65,7 +75,6 @@ const supprimerUtilisateur = async (id) => {
     }
   }
 };
-
 const filteredUtilisateurs = computed(() => {
   return utilisateurStore.utilisateurs.filter(user =>
     user.nom.toLowerCase().includes(searchQuery.value.toLowerCase()) ||

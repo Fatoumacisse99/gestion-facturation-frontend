@@ -12,7 +12,7 @@
     <table class="table table-bordered">
       <thead class="table-light border-top">
         <tr>
-          <th>ID</th>
+          <th>N°Facture</th>
           <th>Date d'Émission</th>
           <th>Date d'Échéance</th>
           <th>Client</th>
@@ -27,10 +27,10 @@
           <td>FT{{ facture.id }}</td>
           <td>{{ formatDate(facture.date_emission) }}</td>
           <td>{{ formatDate(facture.date_echeance) }}</td>
-          <td>{{ facture.client ? facture.client.nom : "Client inconnu" }}</td>
-          <td>{{ facture.montant }}MRU</td>
+          <td>{{ facture.client ? `${facture.client.nom} ${facture.client.prenom}` : "Client inconnu" }}</td>
+          <td>{{ facture.montant }} MRU</td>
           <td>{{ facture.pourcentage_paiement }}%</td>
-          <td>{{ calculateMontantRestant(facture) }}MRU</td> 
+          <td>{{ calculateMontantRestant(facture) }} MRU</td> 
           <td class="text-center">
             <router-link :to="{ name: 'DetailFacture', params: { id: facture.id } }" class="action-icon">
               <i class="fas fa-eye"></i>
@@ -94,7 +94,7 @@ const filteredFactures = computed(() => {
 
 <style scoped>
 .container {
-  max-width: 1000px;
+  max-width: 1150px;
 }
 
 .header {

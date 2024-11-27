@@ -1,183 +1,391 @@
-<template>
-  <div class="dashboard">
-    <header class="dashboard-header">
-      <h1>Tableau de Bord - Gestion de Facturation</h1>
-    </header>
-
-    <!-- Alertes d'échéance -->
-    <div v-if="alerts.length > 0" class="alerts-section">
-      <h2 class="section-title">Alertes d'Échéance</h2>
-      <ul>
-        <li v-for="alert in alerts" :key="alert.factureId">
-          <strong>Facture #{{ alert.factureId }}:</strong> {{ alert.message }}
-        </li>
-      </ul>
-    </div>
-
-    <!-- Indicateurs Financiers -->
-    <div class="financial-indicators">
-      <div class="indicator-card" v-for="indicator in indicators" :key="indicator.label">
-        <h3>{{ indicator.label }}</h3>
-        <p>{{ indicator.value }} €</p>
+<!-- <template>
+  <div class="container my-5">
+    <h1 class="text-center mb-4">Tableau de Bord</h1>
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body text-center">
+            <h3 class="text-success">{{ totalPaye }} MRU</h3>
+            <p class="mb-0">Total payé</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body text-center">
+            <h3 class="text-danger">{{ totalImpayes }} MRU</h3>
+            <p class="mb-0">Total impayé</p>
+          </div>
+        </div>
       </div>
     </div>
-
-    <!-- Statistiques Clients -->
-    <h2 class="section-title">Statistiques Clients</h2>
-    <table class="client-stats">
-      <thead>
-        <tr>
-          <th>Client</th>
-          <th>Montant Total Dû</th>
-          <th>Dernière Facture</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="client in clients" :key="client.id">
-          <td>{{ client.nom }}</td>
-          <td>{{ client.total_du }} €</td>
-          <td>{{ formatDate(client.derniere_facture) }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div v-if="alerts.length > 0" class="card shadow-sm mb-4">
+      <div class="card-header bg-warning text-white">
+        <h5 class="mb-0">Alertes d'Échéance</h5>
+      </div>
+      <div class="card-body">
+        <table class="table table-striped table-bordered">
+          <thead class="table-dark">
+            <tr>
+              <th>N° Facture</th>
+              <th>Nom client</th>
+              <th>Retard (jours)</th>
+              <th>Montant restant (MRU)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="alert in alerts" :key="alert.factureId">
+              <td>{{ alert.factureId }}</td>
+              <td>{{ alert.client }}</td>
+              <td class="text-danger">{{ alert.retard }}</td>
+              <td>{{ alert.solde }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5>Indicateurs Financiers</h5>
+            <canvas id="financialChart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5>Statistiques Clients</h5>
+            <canvas id="clientChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
+import Chart from "chart.js/auto";
 import { useFactureStore } from "@/stores/factureStore";
 import { useClientStore } from "@/stores/clientStore";
+import { usePaiementStore } from "@/stores/paiementStore";
 
+// Stores
 const factureStore = useFactureStore();
 const clientStore = useClientStore();
+const paiementStore = usePaiementStore();
 
-const indicators = ref([
-  { label: "Total Facturé", value: 0 },
-  { label: "Paiements Reçus", value: 0 },
-  { label: "Montant Total Dû", value: 0 },
-]);
+// Références pour les graphiques
+const financialChart = ref(null);
+const clientChart = ref(null);
 
-const clients = ref([]);
+// Calculs réactifs
+const totalPaye = computed(() =>
+  paiementStore.paiements.reduce((sum, paiement) => sum + Number(paiement.montant_paye || 0), 0)
+);
 
-// Computed pour récupérer les alertes
-const alerts = computed(() => factureStore.alerts);
+const totalImpayes = computed(() =>
+  factureStore.factures.reduce((sum, facture) => {
+    const totalPayeFacture = paiementStore.paiements
+      .filter((paiement) => paiement.id_facture === facture.id)
+      .reduce((subSum, paiement) => subSum + Number(paiement.montant_paye || 0), 0);
+    return sum + (facture.montant - totalPayeFacture);
+  }, 0)
+);
 
+const alerts = computed(() =>
+  factureStore.factures
+    .filter(
+      (facture) =>
+        new Date(facture.date_echeance) < new Date() && facture.pourcentage_paiement < 100
+    )
+    .map((facture) => ({
+      factureId: facture.id,
+      client: facture.client?.nom || "Inconnu",
+      retard: Math.ceil(
+        (new Date() - new Date(facture.date_echeance)) / (1000 * 60 * 60 * 24)
+      ),
+      solde: facture.montant - facture.montant_paye || 0,
+    }))
+);
+
+// Charger les données et créer les graphiques
 const loadDashboardData = async () => {
   await factureStore.loadDataFromApi();
-  await clientStore.loadClientData();
+  await clientStore.loadDataFromApi();
+  await paiementStore.loadDataFromApi();
 
-  // Calcul des indicateurs financiers à partir des factures
-  indicators.value[0].value = factureStore.factures.reduce(
-    (total, facture) => total + (facture.montant_total || 0),
-    0
-  );
-  indicators.value[1].value = factureStore.factures.reduce(
-    (total, facture) => total + (facture.montant_paye || 0),
-    0
-  );
-  indicators.value[2].value = factureStore.factures.reduce(
-    (total, facture) => total + (facture.montant_du || 0),
-    0
-  );
+  const factures = factureStore.factures;
+  const clients = clientStore.clients;
 
-  // Préparer les statistiques clients
-  clients.value = clientStore.clients.map(client => ({
-    nom: client.nom,
-    total_du: client.factures.reduce((total, facture) => total + facture.montant_du, 0),
-    derniere_facture: client.factures[0]?.date_creation,
-  }));
+  // Données pour les graphiques
+  const clientData = clients.map((client) => {
+    const totalDue = factures
+      .filter((facture) => facture.id_client === client.id)
+      .reduce((sum, facture) => {
+        const totalPayeFacture = paiementStore.paiements
+          .filter((paiement) => paiement.id_facture === facture.id)
+          .reduce((subSum, paiement) => subSum + Number(paiement.montant_paye || 0), 0);
+        return sum + (facture.montant - totalPayeFacture);
+      }, 0);
+
+    return { name: client.nom, totalDue };
+  });
+
+  // Créer le graphique financier
+  financialChart.value = new Chart(document.getElementById("financialChart"), {
+    type: "bar",
+    data: {
+      labels: ["Total Payé", "Total Impayé"],
+      datasets: [
+        {
+          label: "Montants (MRU)",
+          data: [totalPaye.value, totalImpayes.value],
+          backgroundColor: ["#218838", "#dc3545"],
+        },
+      ],
+    },
+  });
+
+  // Créer le graphique client
+  const clientNames = clientData.map((client) => client.name);
+  const clientTotals = clientData.map((client) => client.totalDue);
+
+  clientChart.value = new Chart(document.getElementById("clientChart"), {
+    type: "pie",
+    data: {
+      labels: clientNames,
+      datasets: [
+        {
+          data: clientTotals,
+          backgroundColor: clientData.map(
+            (_, index) => `hsl(${(index * 360) / clientData.length}, 70%, 60%)`
+          ),
+        },
+      ],
+    },
+  });
 };
 
-const formatDate = (dateString) => new Date(dateString).toLocaleDateString();
-
-onMounted(loadDashboardData);
+// Charger les données lors du montage
+onMounted(() => {
+  loadDashboardData();
+});
 </script>
 
 
-<style scoped>
-.dashboard {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  font-family: 'Roboto', sans-serif;
-  background-color: #f4f4ec;
-  min-height: 100vh;
+ <style scoped>
+.card {
+  border-radius: 10px;
 }
 
-.dashboard-header {
-  text-align: center;
-  color: #218838;
-  padding: 15px;
+.card-header {
+  font-size: 1.25rem;
+}
+
+.card-body h3 {
   font-size: 2rem;
   font-weight: bold;
-  background-color: #e0e0d1;
-  width: 100%;
-  border-bottom: 4px solid #1e7e34;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.alerts-section {
-  width: 80%;
-  background-color: #fff3cd;
-  padding: 15px;
-  margin-bottom: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+canvas {
+  max-height: 300px;
 }
 
-.alerts-section ul {
-  list-style-type: none;
-  padding: 0;
+</style>
+ -->
+ <template>
+  <div class="container my-5">
+    <h1 class="text-center mb-4">Tableau de Bord</h1>
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <div class="card-body text-center">
+            <h3 class="text-primary">{{ totalFacture }} MRU</h3>
+            <p class="mb-0">Total facturé</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <div class="card-body text-center">
+            <h3 class="text-success">{{ totalPaye }} MRU</h3>
+            <p class="mb-0">Total payé</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <div class="card-body text-center">
+            <h3 class="text-danger">{{ totalImpayes }} MRU</h3>
+            <p class="mb-0">Total impayé</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="alerts.length > 0" class="card shadow-sm mb-4">
+      <div class="card-header bg-warning text-white">
+        <h5 class="mb-0">Alertes d'Échéance</h5>
+      </div>
+      <div class="card-body">
+        <table class="table table-striped table-bordered">
+          <thead class="table-dark">
+            <tr>
+              <th>N° Facture</th>
+              <th>Nom client</th>
+              <th>Retard (jours)</th>
+              <th>Montant restant (MRU)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="alert in alerts" :key="alert.factureId">
+              <td>{{ alert.factureId }}</td>
+              <td>{{ alert.client }}</td>
+              <td class="text-danger">{{ alert.retard }}</td>
+              <td>{{ alert.solde }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5>Indicateurs Financiers</h5>
+            <canvas id="financialChart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5>Statistiques Clients</h5>
+            <canvas id="clientChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script setup>
+import { ref, computed, onMounted } from "vue";
+import Chart from "chart.js/auto";
+import { useFactureStore } from "@/stores/factureStore";
+import { useClientStore } from "@/stores/clientStore";
+import { usePaiementStore } from "@/stores/paiementStore";
+const factureStore = useFactureStore();
+const clientStore = useClientStore();
+const paiementStore = usePaiementStore();
+
+const financialChart = ref(null);
+const clientChart = ref(null);
+const totalFacture = computed(() =>
+  factureStore.factures.reduce((sum, facture) => sum + Number(facture.montant || 0), 0)
+);
+
+const totalPaye = computed(() =>
+  paiementStore.paiements.reduce((sum, paiement) => sum + Number(paiement.montant_paye || 0), 0)
+);
+
+const totalImpayes = computed(() =>
+  factureStore.factures.reduce((sum, facture) => {
+    const totalPayeFacture = paiementStore.paiements
+      .filter((paiement) => paiement.id_facture === facture.id)
+      .reduce((subSum, paiement) => subSum + Number(paiement.montant_paye || 0), 0);
+    return sum + (facture.montant - totalPayeFacture);
+  }, 0)
+);
+
+const alerts = computed(() =>
+  factureStore.factures
+    .filter(
+      (facture) =>
+        new Date(facture.date_echeance) < new Date() && facture.pourcentage_paiement < 100
+    )
+    .map((facture) => ({
+      factureId: facture.id,
+      client: facture.client?.nom || "Inconnu",
+      retard: Math.ceil(
+        (new Date() - new Date(facture.date_echeance)) / (1000 * 60 * 60 * 24)
+      ),
+      solde: facture.montant - facture.montant_paye || 0,
+    }))
+);
+const loadDashboardData = async () => {
+  await factureStore.loadDataFromApi();
+  await clientStore.loadDataFromApi();
+  await paiementStore.loadDataFromApi();
+
+  const factures = factureStore.factures;
+  const clients = clientStore.clients;
+  const clientData = clients.map((client) => {
+    const totalDue = factures
+      .filter((facture) => facture.id_client === client.id)
+      .reduce((sum, facture) => {
+        const totalPayeFacture = paiementStore.paiements
+          .filter((paiement) => paiement.id_facture === facture.id)
+          .reduce((subSum, paiement) => subSum + Number(paiement.montant_paye || 0), 0);
+        return sum + (facture.montant - totalPayeFacture);
+      }, 0);
+
+    return { name: client.nom, totalDue };
+  });
+  financialChart.value = new Chart(document.getElementById("financialChart"), {
+    type: "bar",
+    data: {
+      labels: ["Total Facturé", "Total Payé", "Total Impayé"],
+      datasets: [
+        {
+          label: "Montants (MRU)",
+          data: [totalFacture.value, totalPaye.value, totalImpayes.value],
+          backgroundColor: ["#007bff", "#218838", "#dc3545"],
+        },
+      ],
+    },
+  });
+  const clientNames = clientData.map((client) => client.name);
+  const clientTotals = clientData.map((client) => client.totalDue);
+
+  clientChart.value = new Chart(document.getElementById("clientChart"), {
+    type: "pie",
+    data: {
+      labels: clientNames,
+      datasets: [
+        {
+          data: clientTotals,
+          backgroundColor: clientData.map(
+            (_, index) => `hsl(${(index * 360) / clientData.length}, 70%, 60%)`
+          ),
+        },
+      ],
+    },
+  });
+};
+onMounted(() => {
+  loadDashboardData();
+});
+</script>
+<style scoped>
+.card {
+  border-radius: 10px;
 }
 
-.alerts-section li {
-  font-size: 1rem;
-  color: #856404;
-  margin-bottom: 8px;
+.card-header {
+  font-size: 1.25rem;
 }
 
-.financial-indicators {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.indicator-card {
-  width: 200px;
-  height: 100px;
-  background: #ffffff;
-  border: 2px solid #218838;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.indicator-card h3 {
-  color: #218838;
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-.indicator-card p {
-  color: #1e7e34;
-  font-size: 1.5rem;
+.card-body h3 {
+  font-size: 2rem;
   font-weight: bold;
 }
 
-.section-title {
-  color: #218838;
-  font-size: 1.5rem;
-  margin-top: 30px;
-  font-weight: 600;
-  text-align: center;
-  padding-bottom: 10px;
-  border-bottom: 2px solid #1e7e34;
-  width: 80%;
+canvas {
+  max-height: 300px;
 }
+
 </style>
+
+

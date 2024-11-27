@@ -36,12 +36,17 @@ import DetailPaiement from '@/components/paiements/detailPaiement.vue';
 
 // Profile
 import Profile from '../components/auth/ProfilePage.vue'; 
+import ChangePassword from '../components/auth/ChangePassword.vue';
+
+
 
 const routes = [
   { path: '/', redirect: '/login' },
   { path: '/login', component: Login, meta: { requiresAuth: false } },
   { path: '/home', component: Home, meta: { requiresAuth: true } },
   { path: '/profile', component: Profile, meta: { requiresAuth: true } },
+  { path: '/changer-mot-de-passe', component: ChangePassword , meta: { requiresAuth: true } },
+  
   // Gestion du mot de passe
   { path: '/forgot-password', component: ForgotPassword, meta: { requiresAuth: false } },
   { path: '/reset-password', component: ResetPassword, meta: { requiresAuth: false } },

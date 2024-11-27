@@ -7,16 +7,18 @@
 </template>
 
 <script>
+import Home from './components/Home.vue';
 import Navbar from './components/Navbar.vue';
+
 
 export default {
   name: 'App',
   components: {
     Navbar,
+    Home,
   },
   computed: {
     showNavbar() {
-      // Liste des routes où le navbar ne doit pas être affiché
       const noNavbarRoutes = ['/login', '/forgot-password', '/reset-password'];
       return !noNavbarRoutes.includes(this.$route.path);
     },

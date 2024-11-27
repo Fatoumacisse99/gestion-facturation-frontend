@@ -3,13 +3,11 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 axios.defaults.baseURL = "http://localhost:4000/api";
-
-// Ajouter un interceptor pour envoyer le token d'authentification avec chaque requête
 axios.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token'); // Récupère le token depuis le stockage local
+    const token = localStorage.getItem('token');
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`; // Ajoute le token à l'en-tête Authorization
+      config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;
   },
@@ -21,29 +19,10 @@ axios.interceptors.request.use(
 export const useFactureStore = defineStore("factureStore", {
   state: () => ({
     factures: [],
-    alerts: [], // Tableau des alertes pour le tableau de bord
-    userRole: localStorage.getItem('role'), // Récupère le rôle de l'utilisateur depuis le stockage local
+    alerts: [],
+    userRole: localStorage.getItem('role'), 
   }),
-
   actions: {
-    // async loadDataFromApi() {
-    //   try {
-    //     const response = await axios.get("/factures");
-    //     const factures = response.data.data;
-    //     for (let facture of factures) {
-    //       if (!facture.client && facture.id_client) {
-    //         const clientResponse = await axios.get(`/clients/${facture.id_client}`);
-    //         facture.client = clientResponse.data.data;
-    //       }
-    //     }
-
-    //     this.factures = factures.sort((a, b) => a.id - b.id);
-
-    //     this.checkDueDates();
-    //   } catch (error) {
-    //     Swal.fire("Erreur", "Erreur lors du chargement des factures.", "error");
-    //   }
-    // },
     async loadDataFromApi() {
       try {
         const response = await axios.get("/factures");
@@ -59,14 +38,12 @@ export const useFactureStore = defineStore("factureStore", {
         this.factures = factures.sort((a, b) => a.id - b.id);
         this.checkDueDates();
     
-        return this.factures; // Retourne les factures
+        return this.factures; 
       } catch (error) {
         Swal.fire("Erreur", "Erreur lors du chargement des factures.", "error");
-        return []; // Retourne un tableau vide en cas d'erreur
+        return []; 
       }
     },
-    
-
     checkDueDates() {
       const today = new Date().toISOString().split("T")[0];
       this.alerts = []; 
@@ -81,10 +58,8 @@ export const useFactureStore = defineStore("factureStore", {
         }
       });
     },
-
     async addFacture(facture) {
       try {
-        // Validation des champs au niveau du frontend
         if (facture.quantite <= 0) {
           Swal.fire("Erreur", "La quantité doit être un entier positif!", "error");
           return;
@@ -98,17 +73,13 @@ export const useFactureStore = defineStore("factureStore", {
         const response = await axios.post("/factures", facture);
         if (response.status === 201 || response.status === 200) {
           this.factures.push(response.data.data);
-
-          // Trier par ID après ajout
           this.factures.sort((a, b) => a.id - b.id);
-
           Swal.fire("Succès", "Facture ajoutée avec succès!", "success");
           this.checkDueDates();
         } else {
           Swal.fire("Erreur", "Erreur inattendue lors de l'ajout de la facture.", "error");
         }
       } catch (error) {
-        // Gérer les erreurs renvoyées par le backend
         if (error.response?.data?.errors) {
           const errorMessages = error.response.data.errors
             .map((err) => `- ${err.msg}`)
@@ -127,10 +98,9 @@ export const useFactureStore = defineStore("factureStore", {
         }
       }
     },
-
     async updateFacture(updatedFacture) {
       try {
-        // Validation des champs au niveau du frontend
+        // Validation locale avant d'envoyer les données
         if (updatedFacture.quantite <= 0) {
           Swal.fire("Erreur", "La quantité doit être un entier positif!", "error");
           return;
@@ -151,48 +121,73 @@ export const useFactureStore = defineStore("factureStore", {
           return;
         }
 
-        await axios.put(`/factures/${updatedFacture.id}`, updatedFacture);
+        // Mise à jour via l'API
+        const response = await axios.put(`/factures/${updatedFacture.id}`, updatedFacture);
         const index = this.factures.findIndex((f) => f.id === updatedFacture.id);
+
         if (index !== -1) {
           this.factures[index] = { ...updatedFacture, id: updatedFacture.id };
-
           this.factures.sort((a, b) => a.id - b.id);
         }
         Swal.fire("Succès", "Facture mise à jour avec succès!", "success");
-        this.checkDueDates();
       } catch (error) {
-        Swal.fire(
-          "Erreur",
-          error.response?.data?.message || "Erreur lors de la mise à jour de la facture.",
-          "error"
-        );
+        if (error.response?.data?.errors) {
+          const errorMessages = error.response.data.errors
+            .map((err) => `- ${err.msg}`)
+            .join("<br>");
+          Swal.fire({
+            title: "Erreur de validation",
+            html: errorMessages,
+            icon: "error",
+          });
+        } else {
+          Swal.fire(
+            "Erreur",
+            error.response?.data?.message || "Erreur lors de la mise à jour de la facture.",
+            "error"
+          );
+        }
       }
     },
-
     async deleteFacture(id) {
+      const facture = this.factures.find(f => f.id === id);
+      if (facture && facture.pourcentage_paiement > 0) {
+        Swal.fire(
+          "Impossible de supprimer",
+          "Cette facture a déjà reçu des paiements et ne peut pas être supprimée.",
+          "error"
+        );
+        return;
+      }
+    
       try {
         const response = await axios.delete(`/factures/${id}`);
         if (response.status === 200 || response.status === 204) {
-          this.factures = this.factures.filter((facture) => facture.id !== id);
+          this.factures = this.factures.filter((f) => f.id !== id);
           this.factures.sort((a, b) => a.id - b.id);
-    
           Swal.fire("Succès", "Facture supprimée avec succès!", "success");
         }
       } catch (error) {
-        const errorMessage = error.response?.data?.message;
-        if (errorMessage && errorMessage.includes("paiements associés")) {
+        console.error("Erreur lors de la suppression de la facture :", error);
+    
+        const errorMessage = error.response?.data?.message || "";
+        
+        if (errorMessage.toLowerCase().includes("paiement")) {
           Swal.fire(
             "Impossible de supprimer",
             "Cette facture ne peut pas être supprimée car elle est associée à des paiements.",
             "error"
           );
         } else {
-          Swal.fire("Erreur", "Impossible de supprimer cette facture.", "error");
+          Swal.fire(
+            "Erreur",
+            errorMessage || "Impossible de supprimer cette facture. Veuillez réessayer plus tard.",
+            "error"
+          );
         }
       }
     },
     
-
     async getFactureById(id) {
       try {
         const response = await axios.get(`/factures/${id}`);

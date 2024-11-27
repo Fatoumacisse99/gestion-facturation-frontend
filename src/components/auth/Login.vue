@@ -16,15 +16,22 @@
           >
         </div>
 
-        <div class="form-group">
+        <div class="form-group password-wrapper">
           <label>Mot de passe :</label>
-          <input 
-            type="password" 
-            class="form-control"
-            v-model="form.password"
-            placeholder="Enter votre mot de passe"
-            required
-          >
+          <div class="password-container">
+            <input 
+              :type="passwordVisible ? 'text' : 'password'"
+              class="form-control"
+              v-model="form.password"
+              placeholder="Enter votre mot de passe"
+              required
+            >
+            <i 
+              class="toggle-password fa" 
+              :class="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"
+              @click="togglePasswordVisibility"
+            ></i>
+          </div>
           <div class="forgot-password-wrapper">
             <router-link to="/forgot-password" class="forgot-password">Mot de passe oublié?</router-link>
           </div>
@@ -36,32 +43,43 @@
   </div>
 </template>
 
+
+
+
 <script setup>
-import { reactive } from 'vue';
-import { useRouter } from 'vue-router';
-import axios from 'axios';
+import { reactive, ref } from "vue";
+import { useRouter } from "vue-router";
+import axios from "axios";
 
 const router = useRouter();
 
 const form = reactive({
-  email: '',
-  password: '',
+  email: "",
+  password: "",
 });
+
+// État pour basculer la visibilité du mot de passe
+const passwordVisible = ref(false);
+
+const togglePasswordVisibility = () => {
+  passwordVisible.value = !passwordVisible.value;
+};
 
 const handleSubmit = async () => {
   try {
-    const response = await axios.post('http://localhost:4000/auth/login', {
+    const response = await axios.post("http://localhost:4000/auth/login", {
       email: form.email,
       mot_de_passe: form.password,
     });
-    localStorage.setItem('token', response.data.token);
-    router.push('/home');
+    localStorage.setItem("token", response.data.token);
+    router.push("/home");
   } catch (error) {
     console.error(error.response ? error.response.data : error.message);
-    alert('Erreur de connexion, veuillez vérifier vos informations.');
+    alert("Erreur de connexion, veuillez vérifier vos informations.");
   }
 };
 </script>
+
 
 <style scoped>
 .auth-page {
@@ -77,7 +95,7 @@ const handleSubmit = async () => {
 .background-box {
   position: absolute;
   width: 480px;
-  height: 490px;
+  height: 480px;
   background: #218838; 
   border-radius: 20px;
   transform: rotate(-6deg) translateY(-20px); 
@@ -89,8 +107,8 @@ const handleSubmit = async () => {
   background: white;
   border-radius: 20px;
   padding: 60px; 
-  max-width: 470px;
-  width: 100%;
+  width: 480px;
+  height: 480px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   text-align: center;
   z-index: 1;
@@ -125,6 +143,29 @@ const handleSubmit = async () => {
   box-shadow: none;
 }
 
+.password-wrapper {
+  position: relative;
+}
+
+.password-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px; /* Aligne l'icône à droite */
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #ccc;
+}
+
+.toggle-password:hover {
+  color: #218838;
+}
+
 .forgot-password-wrapper {
   text-align: right;
   margin-top: 5px;
@@ -138,11 +179,6 @@ const handleSubmit = async () => {
 
 .forgot-password:hover {
   text-decoration: underline;
-}
-
-.form-check {
-  margin: 20px 0;
-  text-align: left;
 }
 
 .btn-login {

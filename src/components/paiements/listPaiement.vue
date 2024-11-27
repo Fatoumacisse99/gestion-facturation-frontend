@@ -26,7 +26,7 @@
       <tbody>
         <tr v-for="paiement in paiementsFiltres" :key="paiement.id">
           <td>{{ formatDate(paiement.date_paiement) }}</td>
-          <td>{{ paiement.montant_paye }} €</td>
+          <td>{{ paiement.montant_paye }} MRU</td>
           <td>FT{{ paiement.facture ? paiement.facture.id : 'Non défini' }}</td>
           <td>{{ paiement.modePaiement ? paiement.modePaiement.libelle : 'Non défini' }}</td>
           <td class="text-center">
